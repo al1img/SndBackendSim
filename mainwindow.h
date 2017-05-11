@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "CommandInterface.h"
+
 #include <QMainWindow>
 
 namespace Ui {
@@ -17,6 +19,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    DBus::Connection mBus;
+    CommandInterface *mCommandInterface;
+
+private slots:
+    void onBtnConnect();
 };
 
 #endif // MAINWINDOW_H

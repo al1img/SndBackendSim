@@ -428,11 +428,11 @@ private:
         ri >> removedSourceID;
         SourceRemoved(removedSourceID);
     }
-    void _NumberOfSinkClassesChanged_stub(const ::DBus::SignalMessage &sig)
+    void _NumberOfSinkClassesChanged_stub(const ::DBus::SignalMessage&)
     {
         NumberOfSinkClassesChanged();
     }
-    void _NumberOfSourceClassesChanged_stub(const ::DBus::SignalMessage &sig)
+    void _NumberOfSourceClassesChanged_stub(const ::DBus::SignalMessage&)
     {
         NumberOfSourceClassesChanged();
     }

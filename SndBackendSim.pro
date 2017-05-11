@@ -12,13 +12,24 @@ TARGET = SndBackendSim
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += \
+    main.cpp\
+    mainwindow.cpp \
+    CommandInterface/CommandInterfaceConverter.cpp \
+    CommandInterface/CommandInterface.cpp
 
 HEADERS  += mainwindow.h \
-    CommandInterfaceProxy.h
+    CommandInterface/CommandInterface.h \
+    CommandInterface/CommandInterfaceConverter.h \
+    CommandInterface/CommandInterfaceProxy.h
 
 FORMS    += mainwindow.ui
 
 DISTFILES += \
-    CommandInterface.xml
+    CommandInterface/CommandInterface.xml
+
+INCLUDEPATH += \
+    /usr/include/dbus-c++-1 \
+    CommandInterface/
+
+unix|win32: LIBS += -ldbus-c++-1
