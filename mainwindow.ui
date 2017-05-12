@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="btnConnect">
+   <widget class="QPushButton" name="btnMedia">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -23,8 +23,39 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="text">
-     <string>Connect</string>
+     <string>Media</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+    <property name="autoExclusive">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnNavigation">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>80</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Navigation</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="autoExclusive">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
@@ -50,25 +81,5 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections>
-  <connection>
-   <sender>btnConnect</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>onBtnConnect()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>49</x>
-     <y>56</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>424</x>
-     <y>230</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
- <slots>
-  <slot>onBtnConnect()</slot>
- </slots>
+ <connections/>
 </ui>

@@ -7,8 +7,9 @@ using namespace org::genivi::audiomanager;
 using namespace am;
 using namespace std;
 
-CommandInterfaceConverter::CommandInterfaceConverter(DBus::Connection& connection) :
-    DBus::ObjectProxy(connection, DBUS_PATH, DBUS_SERVICE)
+CommandInterfaceConverter::CommandInterfaceConverter(DBus::Connection& connection, CommandInterfaceNotifications& notifications) :
+    DBus::ObjectProxy(connection, DBUS_PATH, DBUS_SERVICE),
+    mNotifications(notifications)
 {
 
 }
@@ -236,87 +237,87 @@ am_Error_e CommandInterfaceConverter::setMainSourceNotificationConfiguration(con
 
 void CommandInterfaceConverter::NewMainConnection(const ::DBus::Struct< uint16_t, uint16_t, uint16_t, int16_t, int16_t >& mainConnection)
 {
-    OnNewMainConnection(ConvertMainConnection(mainConnection));
+    mNotifications.OnNewMainConnection(ConvertMainConnection(mainConnection));
 }
 
 void CommandInterfaceConverter::RemovedMainConnection(const uint16_t& mainConnectionId)
 {
-    OnRemovedMainConnection(mainConnectionId);
+    mNotifications.OnRemovedMainConnection(mainConnectionId);
 }
 
 void CommandInterfaceConverter::SinkAdded(const ::DBus::Struct< uint16_t, string, ::DBus::Struct< int16_t, int16_t >, int16_t, int16_t, uint16_t >& newSink)
 {
-    OnSinkAdded(ConvertSinkType(newSink));
+    mNotifications.OnSinkAdded(ConvertSinkType(newSink));
 }
 
 void CommandInterfaceConverter::SinkRemoved(const uint16_t& removedSinkID)
 {
-    OnSinkRemoved(removedSinkID);
+    mNotifications.OnSinkRemoved(removedSinkID);
 }
 
 void CommandInterfaceConverter::SourceAdded(const ::DBus::Struct< uint16_t, string, ::DBus::Struct< int16_t, int16_t >, uint16_t >& newSource)
 {
-    OnSourceAdded(ConvertSourceType(newSource));
+    mNotifications.OnSourceAdded(ConvertSourceType(newSource));
 }
 
 void CommandInterfaceConverter::SourceRemoved(const uint16_t& removedSourceID)
 {
-    OnSourceRemoved(removedSourceID);
+    mNotifications.OnSourceRemoved(removedSourceID);
 }
 
 void CommandInterfaceConverter::NumberOfSinkClassesChanged()
 {
-    OnNumberOfSinkClassesChanged();
+    mNotifications.OnNumberOfSinkClassesChanged();
 }
 
 void CommandInterfaceConverter::NumberOfSourceClassesChanged()
 {
-    OnNumberOfSourceClassesChanged();
+    mNotifications.OnNumberOfSourceClassesChanged();
 }
 
 void CommandInterfaceConverter::MainConnectionStateChanged(const uint16_t& connectionID, const int16_t& connectionState)
 {
-    OnMainConnectionStateChanged(connectionID, static_cast<am_ConnectionState_e>(connectionState));
+    mNotifications.OnMainConnectionStateChanged(connectionID, static_cast<am_ConnectionState_e>(connectionState));
 }
 
 void CommandInterfaceConverter::MainSinkSoundPropertyChanged(const uint16_t& sinkID, const ::DBus::Struct< int16_t, int16_t >& SoundProperty)
 {
-    OnMainSinkSoundPropertyChanged(sinkID, ConvertMainSoundProperty(SoundProperty));
+    mNotifications.OnMainSinkSoundPropertyChanged(sinkID, ConvertMainSoundProperty(SoundProperty));
 }
 
 void CommandInterfaceConverter::MainSourceSoundPropertyChanged(const uint16_t& sourceID, const ::DBus::Struct< int16_t, int16_t >& SoundProperty)
 {
-    OnMainSourceSoundPropertyChanged(sourceID, ConvertMainSoundProperty(SoundProperty));
+    mNotifications.OnMainSourceSoundPropertyChanged(sourceID, ConvertMainSoundProperty(SoundProperty));
 }
 
 void CommandInterfaceConverter::SinkAvailabilityChanged(const uint16_t& sinkID, const ::DBus::Struct< int16_t, int16_t >& availability)
 {
-    OnSinkAvailabilityChanged(sinkID, ConvertAvailability(availability));
+    mNotifications.OnSinkAvailabilityChanged(sinkID, ConvertAvailability(availability));
 }
 
 void CommandInterfaceConverter::SourceAvailabilityChanged(const uint16_t& sourceID, const ::DBus::Struct< int16_t, int16_t >& availability)
 {
-    OnSourceAvailabilityChanged(sourceID, ConvertAvailability(availability));
+    mNotifications.OnSourceAvailabilityChanged(sourceID, ConvertAvailability(availability));
 }
 
 void CommandInterfaceConverter::VolumeChanged(const uint16_t& sinkID, const int16_t& volume)
 {
-    OnVolumeChanged(sinkID, volume);
+    mNotifications.OnVolumeChanged(sinkID, volume);
 }
 
 void CommandInterfaceConverter::SinkMuteStateChanged(const uint16_t& sinkID, const int16_t& muteState)
 {
-    OnSinkMuteStateChanged(sinkID, static_cast<am_MuteState_e>(muteState));
+    mNotifications.OnSinkMuteStateChanged(sinkID, static_cast<am_MuteState_e>(muteState));
 }
 
 void CommandInterfaceConverter::SystemPropertyChanged(const ::DBus::Struct< int16_t, int16_t >& SystemProperty)
 {
-    OnSystemPropertyChanged(ConvertSystemProperty(SystemProperty));
+    mNotifications.OnSystemPropertyChanged(ConvertSystemProperty(SystemProperty));
 }
 
 void CommandInterfaceConverter::TimingInformationChanged(const uint16_t& mainConnection, const int16_t& time)
 {
-    OnTimingInformationChanged(mainConnection, time);
+    mNotifications.OnTimingInformationChanged(mainConnection, time);
 }
 
 void CommandInterfaceConverter::SinkUpdated(const uint16_t& sinkID, const uint16_t& sinkClassID, const vector< ::DBus::Struct< int16_t, int16_t > >& listMainSinkProperties)
@@ -328,7 +329,7 @@ void CommandInterfaceConverter::SinkUpdated(const uint16_t& sinkID, const uint16
         lListMainSoundProperties.push_back(ConvertMainSoundProperty(soundProperty));
     }
 
-    OnSinkUpdated(sinkID, sinkClassID, lListMainSoundProperties);
+    mNotifications.OnSinkUpdated(sinkID, sinkClassID, lListMainSoundProperties);
 }
 
 void CommandInterfaceConverter::SourceUpdated(const uint16_t& sourceID, const uint16_t& sourceClassID, const vector< ::DBus::Struct< int16_t, int16_t > >& listMainSinkProperties)
@@ -340,27 +341,27 @@ void CommandInterfaceConverter::SourceUpdated(const uint16_t& sourceID, const ui
         lListMainSoundProperties.push_back(ConvertMainSoundProperty(soundProperty));
     }
 
-    OnSourceUpdated(sourceID, sourceClassID, lListMainSoundProperties);
+    mNotifications.OnSourceUpdated(sourceID, sourceClassID, lListMainSoundProperties);
 }
 
 void CommandInterfaceConverter::SinkNotification(const uint16_t& sinkID, const ::DBus::Struct< int16_t, int16_t >& notificationPayload)
 {
-    OnSinkNotification(sinkID, ConvertNotificationPayload(notificationPayload));
+    mNotifications.OnSinkNotification(sinkID, ConvertNotificationPayload(notificationPayload));
 }
 
 void CommandInterfaceConverter::SourceNotification(const uint16_t& sourceID, const ::DBus::Struct< int16_t, int16_t >& notificationPayload)
 {
-    OnSourceNotification(sourceID, ConvertNotificationPayload(notificationPayload));
+    mNotifications.OnSourceNotification(sourceID, ConvertNotificationPayload(notificationPayload));
 }
 
 void CommandInterfaceConverter::SinkMainNotificationConfigurationChanged(const uint16_t& sinkID, const ::DBus::Struct< int16_t, int16_t, int16_t >& mainNotificationConfiguration)
 {
-    OnSinkMainNotificationConfigurationChanged(sinkID, ConvertNotificationConfiguration(mainNotificationConfiguration));
+    mNotifications.OnSinkMainNotificationConfigurationChanged(sinkID, ConvertNotificationConfiguration(mainNotificationConfiguration));
 }
 
 void CommandInterfaceConverter::SourceMainNotificationConfigurationChanged(const uint16_t& sourceID, const ::DBus::Struct< int16_t, int16_t, int16_t >& mainNotificationConfiguration)
 {
-    OnSourceMainNotificationConfigurationChanged(sourceID, ConvertNotificationConfiguration(mainNotificationConfiguration));
+    mNotifications.OnSourceMainNotificationConfigurationChanged(sourceID, ConvertNotificationConfiguration(mainNotificationConfiguration));
 }
 
 /*******************************************************************************

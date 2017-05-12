@@ -1,6 +1,6 @@
+#include <dbus-c++/dbus.h>
 #include "mainwindow.h"
 #include <QApplication>
-
 
 int main(int argc, char *argv[])
 {
@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
 
     DBus::BusDispatcher dispatcher;
     DBus::default_dispatcher = &dispatcher;
+
+    DBus::_init_threading();
 
     MainWindow w;
     w.show();

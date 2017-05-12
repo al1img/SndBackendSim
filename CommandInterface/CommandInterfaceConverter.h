@@ -6,11 +6,41 @@
 #include <audiomanager/audiomanagertypes.h>
 
 
+class CommandInterfaceNotifications
+{
+public:
+    virtual ~CommandInterfaceNotifications() {};
+
+    virtual void OnNewMainConnection(const am::am_MainConnectionType_s& mainConnection) = 0;
+    virtual void OnRemovedMainConnection(const am::am_mainConnectionID_t& mainConnectionId) = 0;
+    virtual void OnSinkAdded(const am::am_SinkType_s& newSink) = 0;
+    virtual void OnSinkRemoved(const am::am_sinkID_t& removedSinkID)  = 0;
+    virtual void OnSourceAdded(const am::am_SourceType_s& newSource) = 0;
+    virtual void OnSourceRemoved(const am::am_sourceID_t& removedSourceID) = 0;
+    virtual void OnNumberOfSinkClassesChanged() = 0;
+    virtual void OnNumberOfSourceClassesChanged() = 0;
+    virtual void OnMainConnectionStateChanged(const am::am_mainConnectionID_t& connectionID, const am::am_ConnectionState_e& connectionState) = 0;
+    virtual void OnMainSinkSoundPropertyChanged(const am::am_sinkID_t& sinkID, const am::am_MainSoundProperty_s& soundProperty) = 0;
+    virtual void OnMainSourceSoundPropertyChanged(const am::am_sourceID_t& sourceID, const am::am_MainSoundProperty_s& soundProperty) = 0;
+    virtual void OnSinkAvailabilityChanged(const am::am_sinkID_t& sinkID, const am::am_Availability_s& availability) = 0;
+    virtual void OnSourceAvailabilityChanged(const am::am_sourceID_t& sourceID, const am::am_Availability_s& availability) = 0;
+    virtual void OnVolumeChanged(const am::am_sinkID_t& sinkID, const am::am_mainVolume_t& volume) = 0;
+    virtual void OnSinkMuteStateChanged(const am::am_sinkID_t& sinkID, const am::am_MuteState_e& muteState) = 0;
+    virtual void OnSystemPropertyChanged(const am::am_SystemProperty_s& systemProperty) = 0;
+    virtual void OnTimingInformationChanged(const am::am_mainConnectionID_t& mainConnection, const am::am_timeSync_t& time) = 0;
+    virtual void OnSinkUpdated(const am::am_sinkID_t& sinkID, const uint16_t& sinkClassID, const std::vector<am::am_MainSoundProperty_s>& listMainSoundProperties) = 0;
+    virtual void OnSourceUpdated(const am::am_sourceID_t& sourceID, const uint16_t& sourceClassID, const std::vector<am::am_MainSoundProperty_s>& listMainSoundProperties) = 0;
+    virtual void OnSourceNotification(const am::am_sourceID_t& sourceID, const am::am_NotificationPayload_s& notificationPayload) = 0;
+    virtual void OnSinkNotification(const am::am_sinkID_t& sinkID, const am::am_NotificationPayload_s& notificationPayload) = 0;
+    virtual void OnSinkMainNotificationConfigurationChanged(const am::am_sinkID_t& sinkID, const am::am_NotificationConfiguration_s& mainNotificationConfiguration) = 0;
+    virtual void OnSourceMainNotificationConfigurationChanged(const am::am_sourceID_t& sourceID, const am::am_NotificationConfiguration_s& mainNotificationConfiguration) = 0;
+};
+
 class CommandInterfaceConverter : public org::genivi::audiomanager::commandinterface_proxy,
                                   public DBus::ObjectProxy
 {
 public:
-    CommandInterfaceConverter(DBus::Connection& connection);
+    CommandInterfaceConverter(DBus::Connection& connection, CommandInterfaceNotifications& notifications);
 
 /*******************************************************************************
  * Commands
@@ -38,35 +68,9 @@ public:
     am::am_Error_e setMainSinkNotificationConfiguration(const am::am_sinkID_t& sinkID, const am::am_NotificationConfiguration_s& mainNotificationConfiguration);
     am::am_Error_e setMainSourceNotificationConfiguration(const am::am_sourceID_t& sourceID, const am::am_NotificationConfiguration_s& mainNotificationConfiguration);
 
-/*******************************************************************************
- * Notifications
- ******************************************************************************/
-
-    virtual void OnNewMainConnection(const am::am_MainConnectionType_s& mainConnection) = 0;
-    virtual void OnRemovedMainConnection(const am::am_mainConnectionID_t& mainConnectionId) = 0;
-    virtual void OnSinkAdded(const am::am_SinkType_s& newSink) = 0;
-    virtual void OnSinkRemoved(const am::am_sinkID_t& removedSinkID)  = 0;
-    virtual void OnSourceAdded(const am::am_SourceType_s& newSource) = 0;
-    virtual void OnSourceRemoved(const am::am_sourceID_t& removedSourceID) = 0;
-    virtual void OnNumberOfSinkClassesChanged() = 0;
-    virtual void OnNumberOfSourceClassesChanged() = 0;
-    virtual void OnMainConnectionStateChanged(const am::am_mainConnectionID_t& connectionID, const am::am_ConnectionState_e& connectionState) = 0;
-    virtual void OnMainSinkSoundPropertyChanged(const am::am_sinkID_t& sinkID, const am::am_MainSoundProperty_s& soundProperty) = 0;
-    virtual void OnMainSourceSoundPropertyChanged(const am::am_sourceID_t& sourceID, const am::am_MainSoundProperty_s& soundProperty) = 0;
-    virtual void OnSinkAvailabilityChanged(const am::am_sinkID_t& sinkID, const am::am_Availability_s& availability) = 0;
-    virtual void OnSourceAvailabilityChanged(const am::am_sourceID_t& sourceID, const am::am_Availability_s& availability) = 0;
-    virtual void OnVolumeChanged(const am::am_sinkID_t& sinkID, const am::am_mainVolume_t& volume) = 0;
-    virtual void OnSinkMuteStateChanged(const am::am_sinkID_t& sinkID, const am::am_MuteState_e& muteState) = 0;
-    virtual void OnSystemPropertyChanged(const am::am_SystemProperty_s& systemProperty) = 0;
-    virtual void OnTimingInformationChanged(const am::am_mainConnectionID_t& mainConnection, const am::am_timeSync_t& time) = 0;
-    virtual void OnSinkUpdated(const am::am_sinkID_t& sinkID, const uint16_t& sinkClassID, const std::vector<am::am_MainSoundProperty_s>& listMainSoundProperties) = 0;
-    virtual void OnSourceUpdated(const am::am_sourceID_t& sourceID, const uint16_t& sourceClassID, const std::vector<am::am_MainSoundProperty_s>& listMainSoundProperties) = 0;
-    virtual void OnSourceNotification(const am::am_sourceID_t& sourceID, const am::am_NotificationPayload_s& notificationPayload) = 0;
-    virtual void OnSinkNotification(const am::am_sinkID_t& sinkID, const am::am_NotificationPayload_s& notificationPayload) = 0;
-    virtual void OnSinkMainNotificationConfigurationChanged(const am::am_sinkID_t& sinkID, const am::am_NotificationConfiguration_s& mainNotificationConfiguration) = 0;
-    virtual void OnSourceMainNotificationConfigurationChanged(const am::am_sourceID_t& sourceID, const am::am_NotificationConfiguration_s& mainNotificationConfiguration) = 0;
-
 private:
+
+    CommandInterfaceNotifications& mNotifications;
 
 /*******************************************************************************
  * Notifications
